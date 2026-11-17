@@ -2,14 +2,12 @@
     "manifest_version": 3,
     "name": "Meown't",
     "version": "1.0",
+    "action": {"default_popup": "popup.html"},
     "permissions": [
         "scripting",
         "storage"
     ],
-    "optional_host_permissions": [
-        "https://*/*",
-        "http://*/*"
-    ]
+    "optional_host_permissions": ["*://*/*"]
 
 
 
