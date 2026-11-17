@@ -6,12 +6,25 @@ button.addEventListener("click", async function(){
     try{
         const hostname = new URL(linkToBeAdded).hostname
         const pattern = `*://${hostname}/*`
-        console.log(pattern)
         const granted = await chrome.permissions.request({ origins: [pattern] })
-        console.log(granted)
+        if(granted){
+            // inject content.js into this site iff it doesn't exist alrdy
+            const existing = await chrome.scripting.getRegisteredContentScripts({ ids: [pattern] })
+            if (existing.length === 0) {
+                await chrome.scripting.registerContentScripts([{
+                    id: pattern,
+                    matches: [pattern],
+                    js: ["content.js"]
+                }])
+            }
+            else{
+                console.log("Link already exists")
+            }
+        }
         showSites()
         document.getElementById("error").style.display = "none"
     } catch (error){
+        console.log(error)
         document.getElementById("error").style.display = "block"
     }
 
@@ -29,8 +42,14 @@ async function showSites(){
         const rmvButton = document.createElement("button")
         rmvButton.textContent = "X"
         rmvButton.addEventListener("click", async function(){
-           await chrome.permissions.remove({ origins: [origin[i]] })
-           showSites()
+            try{
+                await chrome.scripting.unregisterContentScripts({ ids: [origin[i]] })
+            }
+            catch(error){
+                console.log(error)
+            }
+            await chrome.permissions.remove({ origins: [origin[i]] })
+            showSites()
         })
         item.append(rmvButton)
         list.appendChild(item)
