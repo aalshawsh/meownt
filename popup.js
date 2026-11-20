@@ -1,7 +1,13 @@
-const button = document.getElementById("enter")
+function sleep(ms) {
+    return new Promise(function(resolve){ setTimeout(resolve, ms) })
+}
 
-button.addEventListener("click", async function(){
-    const linkToBeAdded = document.getElementById("input").value.trim()
+const input = document.getElementById("input")
+input.addEventListener("keydown", async function (event) 
+{
+  if (event.key === "Enter") {
+
+    const linkToBeAdded = input.value.trim()
 
     try{
         const hostname = new URL(linkToBeAdded).hostname
@@ -27,6 +33,9 @@ button.addEventListener("click", async function(){
         console.log(error)
         document.getElementById("error").style.display = "block"
     }
+        input.value = "";
+    }
+
 
 })
 
@@ -39,8 +48,9 @@ async function showSites(){
     for (let i =0; i<origin.length;i++){
         const item = document.createElement("li") 
         item.textContent = origin[i]
+        item.id = origin[i]
         const rmvButton = document.createElement("button")
-        rmvButton.textContent = "X"
+        rmvButton.textContent = "/ᐠ - ˕ -マ ᶻ 𝗓 𐰁"
         rmvButton.addEventListener("click", async function(){
             try{
                 await chrome.scripting.unregisterContentScripts({ ids: [origin[i]] })
@@ -49,8 +59,12 @@ async function showSites(){
                 console.log(error)
             }
             await chrome.permissions.remove({ origins: [origin[i]] })
-            showSites()
+            // remove the deleted link...
+            await deleteLink(item)
+            item.remove()
         })
+        rmvButton.id = "rmvButton"
+        rmvButton.className = "rmvButton"
         item.append(rmvButton)
         list.appendChild(item)
     }
@@ -58,3 +72,110 @@ async function showSites(){
 
 
 showSites()
+framesSleepy =[
+    "/ᐠ - ˕ -マ",
+    "/ᐠ - ˕ -マ ᶻ",
+    "/ᐠ - ˕ -マ ᶻ 𝗓",
+    "/ᐠ - ˕ -マ ᶻ 𝗓 𐰁"
+]
+
+framesHungy = [
+    "/ᐠ-ⱉ-ᐟ\\ﾉ ",
+    "/ᐠ-ⱉ-ᐟ\\ﾉ ᶠ",
+    "/ᐠ-ⱉ-ᐟ\\ﾉ ᶠe",
+    "/ᐠ-ⱉ-ᐟ\\ﾉ ᶠeᵉ",
+    "/ᐠ-ⱉ-ᐟ\\ﾉ ᶠeᵉd",
+    "/ᐠ-ⱉ-ᐟ\\ﾉ ᶠeᵉd ᵐ",
+    "/ᐠ-ⱉ-ᐟ\\ﾉ ᶠeᵉd ᵐe",
+]
+let countSleepy =0;
+let countHungy =0;
+/* Loop animation for rmvButton */
+snooze = setInterval(function(){
+    const buttons = document.querySelectorAll(".rmvButton")
+
+    let hovering = false
+    buttons.forEach(function (tmp) {
+        if (tmp.dataset.paused) return
+        if(tmp.matches(":hover"))
+        {
+            hovering = true
+            tmp.textContent = framesHungy[countHungy]
+
+            /*start jittering when spelled out "feed me"*/
+            if(countHungy === framesHungy.length -1){
+
+                jiggle(tmp, framesHungy[countHungy],8)
+            }
+        }
+        else{
+            tmp.style.transform = ""
+            tmp.textContent = framesSleepy[countSleepy]
+        }
+    })
+    if(hovering){
+        // countSleepy =0;
+        if(countHungy < framesHungy.length -1){
+
+            countHungy = (countHungy+1)
+        }
+    }
+    else {
+        countHungy = 0
+    }
+
+
+    countSleepy = (countSleepy+1)%framesSleepy.length
+
+
+    }, 250)
+
+/* Create a jiggle effect for rmvButton */
+function jiggle(btn, text, jiggleStart){
+
+    const chars=[...text]
+    btn.textContent = ""
+    chars.forEach(function(ch,i){
+        if(i<jiggleStart){
+            btn.append(ch)
+        }
+        else{
+            const span = document.createElement("span")
+            span.style.whiteSpace = "pre"
+            span.textContent = ch
+            span.style.display = "inline-block"
+            span.style.transform = `translateY(${Math.random()}px)`
+            btn.append(span)
+        }
+    })
+}
+
+async function deleteLink(listItem){
+    // draw it being deleted...
+    const btn = listItem.querySelector(".rmvButton")
+    btn.disabled = true
+    btn.dataset.paused = "true"         // make sure animation pauses...
+    
+    btn.textContent = "(•˕ •マ.ᐟ"
+    await sleep(1000)
+
+    btn.textContent = "/ᐠ-ⱉ-ᐟ\\ﾉ "
+    const text = listItem.firstChild.textContent
+    let result;
+    for (let i = 0; i < text.length; i++){
+        result = "\u00A0".repeat(i) + ">-;;⁠;⁠;€ᐷ" + text.slice(i + 1) 
+        await sleep(250)
+        listItem.firstChild.textContent = result
+    }
+    // cat starts eating
+    await sleep(250)
+    listItem.firstChild.textContent ="\u00A0".repeat(text.length)
+    btn.textContent = "/ᐠ•⤙•ᐟ\\"
+    await sleep(2000)
+    btn.textContent = "/ᐠっ˘ڡ˘ςᐟ\\"
+    await sleep(2000)
+    btn.textContent = "ദ്ദി/ᐠ｡‸｡ᐟ\\"
+    await sleep(2000)
+
+
+}
