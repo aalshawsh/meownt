@@ -118,3 +118,16 @@ background: radial-gradient(hsl(154 5% 15%) 0%, hsl(154 50% 5%) 70%);
     --glitch-hue-2: -40deg;
     animation: glitch-10 1s linear infinite;
 }
+
+@keyframes reveal {
+    from { clip-path: inset(0 0 100% 0); }
+    to   { clip-path: inset(0 0 0 0); }
+}
+
+#content {
+    clip-path: inset(0 0 100% 0);   /* hidden at the start */
+}
+
+#content.reveal {
+    animation: reveal 3s steps(20) forwards;
+}

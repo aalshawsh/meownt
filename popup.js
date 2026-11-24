@@ -1,3 +1,5 @@
+intro()
+
 function sleep(ms) {
     return new Promise(function(resolve){ setTimeout(resolve, ms) })
 }
@@ -196,3 +198,41 @@ function reroll() {
 }
 reroll()
 error.addEventListener("animationiteration", reroll)
+
+
+async function turnOn() {
+    const cover = document.createElement("div")
+    cover.style.cssText = "position:fixed;inset:0;background:black;z-index:0"
+
+    const flash = document.createElement("div")
+    flash.style.cssText = "position:fixed;inset:0;background:white;pointer-events:none;z-index:0;will-change:transform,opacity;transform:scale(0,0.004)"
+
+    document.documentElement.append(cover, flash)
+    await sleep(500)
+
+    // line grows sideways, then fills vertically
+    await flash.animate(
+        [{ transform: "scale(0, 0.004)" }, { transform: "scale(1, 0.004)" }],
+        { duration: 250, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
+    ).finished
+
+    await flash.animate(
+        [{ transform: "scale(1, 0.004)" }, { transform: "scale(1, 1)" }],
+        { duration: 200, easing: "ease-in", fill: "forwards" }
+    ).finished
+
+    // remove the black behind it, then fade the white away smoothly
+    cover.remove()
+    await flash.animate(
+        [{ opacity: 1 }, { opacity: 0 }],
+        { duration: 100, easing: "ease-out", fill: "forwards" }
+    ).finished
+
+    flash.remove()
+}
+
+// runs turn on then reveal content(screen writes itself)
+async function intro() {
+    await turnOn()
+    document.getElementById("content").classList.add("reveal")
+}
