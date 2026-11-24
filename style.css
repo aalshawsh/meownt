@@ -1,8 +1,15 @@
+@font-face {
+    font-family: "MyFont";
+    src: url("fonts/VT323-Regular.ttf") format("truetype");
+}
+
 /*Most of this is copied from https://webartisan.info/how-i-made-my-80s-retro-style-homepage-part-1*/
 body {
   color:hsl(154 84% 70%);
   background: hsl(154 50% 5%);
   text-shadow: 0 0 5px hsl(154, 84%, 70%);
+  font-family: "MyFont", monospace;
+  font-size: medium;
 }
 
 
@@ -14,6 +21,7 @@ body {
   color: inherit;
   font: inherit;
   text-shadow: inherit;
+  caret-shape: block;
   caret-color: hsl(154 84% 70%);
 }
 
@@ -74,3 +82,39 @@ background: radial-gradient(hsl(154 5% 15%) 0%, hsl(154 50% 5%) 70%);
   animation: lines 0.066666666s linear infinite;
 }
 
+@keyframes glitch-10 {
+  0.00%,
+  33.33%,
+  38.33%,
+  66.67%,
+  71.67%,
+  100.00% {
+    transform: none;
+    filter: hue-rotate(0) drop-shadow(0 0 0 transparent);
+  }
+
+  33.43%,
+  38.23% {
+    transform: translate(var(--glitch-x-1), var(--glitch-y-1));
+    filter: hue-rotate(var(--glitch-hue-1))
+      drop-shadow(3px -1px 0 rgb(255 0 0 / 0.1));
+  }
+
+  66.77%,
+  71.57% {
+    transform: translate(var(--glitch-x-2), var(--glitch-y-2));
+    filter: hue-rotate(var(--glitch-hue-2))
+      drop-shadow(-3px 2px 0 rgb(255 0 0 / 0.1));
+  }
+}
+
+#error {
+   display: inline-block;
+    --glitch-x-1: 6px;
+    --glitch-x-2: -7px;
+    --glitch-y-1: 4px;
+    --glitch-y-2:2px;
+    --glitch-hue-1: 270deg;
+    --glitch-hue-2: -40deg;
+    animation: glitch-10 1s linear infinite;
+}

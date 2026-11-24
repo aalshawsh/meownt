@@ -173,9 +173,26 @@ async function deleteLink(listItem){
     btn.textContent = "/ᐠ•⤙•ᐟ\\"
     await sleep(2000)
     btn.textContent = "/ᐠっ˘ڡ˘ςᐟ\\"
-    await sleep(2000)
+    await sleep(1000)
     btn.textContent = "ദ്ദി/ᐠ｡‸｡ᐟ\\"
     await sleep(2000)
 
 
 }
+
+
+// code section that deals with glitch effect on error...
+function rand(min, max) {
+    return Math.random() * (max - min) + min
+}
+const error = document.getElementById("error")
+function reroll() {
+    error.style.setProperty("--glitch-x-1", `${rand(-10, 10)}px`)
+    error.style.setProperty("--glitch-x-2", `${rand(-10, 10)}px`)
+    error.style.setProperty("--glitch-y-1", `${rand(-4, 4)}px`)
+    error.style.setProperty("--glitch-hue-1", `${rand(-90, 90)}deg`)
+    error.style.setProperty("--glitch-hue-2", `${rand(-90, 90)}deg`)
+    error.style.animationDuration = `${rand(0.4, 3)}s`
+}
+reroll()
+error.addEventListener("animationiteration", reroll)
