@@ -22,7 +22,8 @@ input.addEventListener("keydown", async function (event)
                 await chrome.scripting.registerContentScripts([{
                     id: pattern,
                     matches: [pattern],
-                    js: ["content.js"]
+                    js: ["content.js"],
+                    css: ["content.css"]
                 }])
             }
             else{

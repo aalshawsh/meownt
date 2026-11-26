@@ -1,0 +1,37 @@
+#meownt_text {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2147483646;
+  margin: 0;
+  white-space: pre;
+  line-height: 1;
+  font-size: 12px;
+  color: hsl(154 84% 70%);
+  text-shadow: 0 0 5px hsl(154 84% 70%);
+  font-family: monospace;
+  pointer-events: none;
+}
+
+
+#meownt_glare {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483645;
+  background: radial-gradient(hsl(154 5% 15%) 0%, hsl(154 50% 5%) 70%);
+}
+
+@keyframes meownt-lines {
+  0%, 50% { background-position: 0px 0px; }
+  51%, 100% { background-position: 0px 2px; }
+}
+
+#meownt_interlaced {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  background: repeating-linear-gradient(transparent 0px 2px, hsl(154 0% 0% / 0.3) 6px 8px);
+  animation: meownt-lines 0.0667s linear infinite;
+}

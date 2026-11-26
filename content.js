@@ -1,71 +1,125 @@
-// add red border
-const cat = document.createElement("div")
-const scale = 5
-const offset = 73
-cat.style.imageRendering = "pixelated"
-cat.style.transformOrigin = "bottom right"
-cat.style.transform = `scale(${scale})`
-cat.style.width = "200px"       // ONE frame's width
-cat.style.height = "100px"      
-cat.style.backgroundImage = `url(${chrome.runtime.getURL("images/walk.png")})`
-cat.style.backgroundPosition = "0px 0px"   // 0px = first frame
-cat.style.position = "fixed"
-cat.style.right = `${-offset * scale - 400}px`
-cat.style.bottom = "-2px"
-cat.style.zIndex = "2147483647"
-document.documentElement.appendChild(cat)
+const meownt_text = document.createElement("pre")
+const meownt_glare = document.createElement("div")
+const meownt_interlaced = document.createElement("div")
+meownt_text.id = "meownt_text"
+meownt_glare.id = "meownt_glare"
+meownt_interlaced.id = "meownt_interlaced"
+meownt_text.textContent = `
+▐██████ ▐██ ▐██      ▐██████ ▐██████      ▐██ ▐██ ▐██████ ▐██ ▐██
+▐██ ▐██ ▐██ ▐██      ▐██ ▐██ ▐██ ▐██      ▐██ ▐██ ▐██ ▐██ ▐██ ▐██
+▐██ ▐██ ▐██████      ▐██ ▐██ ▐██ ▐██      ▐██████ ▐██ ▐██ ▐██ ▐██
+▐██ ▐██ ▐██ ▐██      ▐██ ▐██ ▐██ ▐██        ▐██   ▐██ ▐██ ▐██ ▐██
+▐██████ ▐██ ▐██      ▐██ ▐██ ▐██████        ▐██   ▐██████ ▐██████
 
-let frame = 0
-const frameCount = 7
-const frameWidth = 200
+      ▐██  ▐██ ▐██████ ▐██████ ▐██  ▐██ ▐██████ ▐██ ▐██████
+      ▐███▐███ ▐██     ▐██ ▐██ ▐██  ▐██ ▐██ ▐██  ▐█   ▐██
+      ▐██▐█▐██ ▐████   ▐██ ▐██ ▐██  ▐██ ▐██ ▐██       ▐██
+      ▐██  ▐██ ▐██     ▐██ ▐██ ▐██▐█▐██ ▐██ ▐██       ▐██
+      ▐██  ▐██ ▐██████ ▐██████  ▐█████  ▐██ ▐██       ▐██
 
-const walkTimer = setInterval(function(){
-    cat.style.backgroundPosition = `${-frame * frameWidth}px 0px`
-    frame = (frame + 1) % frameCount
-}, 100)
+                       @%             .,@/
+                     ,&&@#,           %@(/
+                     /@((@@ (        /@((**
+                    ,@&%@@@@@/%@,@,@@@@@@@#
+                  (%@@@@@@@@@@@@@&%@@@@@@@@(
+                 /@@ /@@..%@@@@@@@*.@@@@@@@        ,
+              .   %        @@@@@@@, ,@@@@/   /@@@@@
+             /&&#/, ,&&..(@@@@@@@@*...#&#  &#    .
+                 /@,@@@@@@@@&*/,@@@@@@@@/&%%*
+                 *##@@@@@@@@@@@@@@@@@@@@@@(,
+                  *//%@@@@@@@@@@@@@@@@@@@#..
+                  %@@@@@@@@@@@@@@@@@@@@@@@#
+                 /@@@@@@@@@@@@@@@@@@@@@@@@@(
+                ,@@@@@@@@@@@@@@@@@@@@@@@@@@@/
+               ,,@@@@@@@@@@@@@@@@@@@@@@@@@@@/
+                @@@@%/@@@@@@@@@@@@@@%/@@@@@@/
+                @@@@%/,(@@@@@@@@@@@@%/,(@@@&*
+                @@@@&,#@@@@@@@@@@@@@@%@@@@@(
+                @@@@@@@@@@@@@@@@@@@@@@@@@@@
+                (@@@@@@@@@@@@@@@@@@@@@@@&*
+                    @@, *..% ,,,.  @@/
+                    @(             @%`
+meownt_text.style.zIndex = "2147483646"
 
-cat.style.transition = "right 3s linear"
+function sleep(ms) {
+    return new Promise(function(resolve){ setTimeout(resolve, ms) })
+}
 
-requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-        cat.style.right = `calc(50vw - ${frameWidth * scale / 2}px)`
-    })
-})
 
-let cryTimer
-let frame2 = 0
-const frame2Count = 9
-const frame2Width = 200
-cat.addEventListener("transitionend", function(event){
-    if (event.propertyName !== "right") return
-    clearInterval(walkTimer)
-    cat.style.backgroundImage = `url(${chrome.runtime.getURL("images/cry.png")})`
-    cat.style.backgroundPosition = "0px 0px"
-    cryTimer = setInterval(function(){
-    cat.style.backgroundPosition = `${-frame2 * frame2Width}px 0px`
-    frame2 = (frame2 + 1) % frame2Count
-    }, 100)
+async function ending() {
+    const oldCover = await turnOff()
+    await sleep(1000)
+    await turnOn()
+    document.documentElement.appendChild(meownt_text)
+    document.documentElement.append(meownt_glare, meownt_interlaced)
+    oldCover.remove()
+    await sleep(10000)
+    await turnOff()
+    chrome.runtime.sendMessage("close me")
+}
+ending()
 
-    bar = document.createElement("div")
-    bar.style.position = "fixed"
-    bar.style.bottom = "0px"
-    bar.style.left = "0px"
-    bar.style.right = "0px"
-    bar.style.height = "0px"
-    bar.style.background = "royalblue"
-    bar.style.zIndex = "2147483646"
-    bar.style.transition = "height 5s linear"
-    document.documentElement.appendChild(bar)
-    requestAnimationFrame(function(){
-        requestAnimationFrame(function(){
-            bar.style.height = "100vh"
-        })
-    })
 
-    bar.addEventListener("transitionend", function(){
-        clearInterval(cryTimer)
-        chrome.runtime.sendMessage("close me")
-    })
-})
+async function turnOff() {
+    const cover = document.createElement("div")
+    cover.style.cssText = "position:fixed;inset:0;background:black;z-index:2147483646"
 
-//chrome.runtime.sendMessage("close me")
+    const flash = document.createElement("div")
+    flash.style.cssText = "position:fixed;inset:0;background:white;pointer-events:none;z-index:2147483647;will-change:transform,opacity;opacity:0"
+
+    document.documentElement.append(flash)
+
+    // white fades in over the live page
+    await flash.animate(
+        [{ opacity: 0 }, { opacity: 1 }],
+        { duration: 100, easing: "ease-in", fill: "forwards" }
+    ).finished
+
+    // black goes in behind the white
+    document.documentElement.insertBefore(cover, flash)
+
+    // squash vertically into a line
+    await flash.animate(
+        [{ transform: "scale(1, 1)" }, { transform: "scale(1, 0.004)" }],
+        { duration: 200, easing: "ease-out", fill: "forwards" }
+    ).finished
+
+    // line shrinks sideways into a dot
+    await flash.animate(
+        [{ transform: "scale(1, 0.004)" }, { transform: "scale(0, 0.004)" }],
+        { duration: 250, easing: "cubic-bezier(.8,.2,.8,.2)", fill: "forwards" }
+    ).finished
+
+    flash.remove()
+    return cover
+}
+async function turnOn() {
+    const cover = document.createElement("div")
+
+    const flash = document.createElement("div")
+
+    cover.style.cssText = "position:fixed;inset:0;background:black;z-index:2147483646"
+    flash.style.cssText = "position:fixed;inset:0;background:white;pointer-events:none;z-index:2147483647;will-change:transform,opacity;transform:scale(0,0.004)"
+    document.documentElement.append(cover, flash)
+    await sleep(500)
+
+    // line grows sideways, then fills vertically
+    await flash.animate(
+        [{ transform: "scale(0, 0.004)" }, { transform: "scale(1, 0.004)" }],
+        { duration: 250, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
+    ).finished
+
+    await flash.animate(
+        [{ transform: "scale(1, 0.004)" }, { transform: "scale(1, 1)" }],
+        { duration: 200, easing: "ease-in", fill: "forwards" }
+    ).finished
+
+    // remove the black behind it, then fade the white away smoothly
+    cover.remove()
+    await flash.animate(
+        [{ opacity: 1 }, { opacity: 0 }],
+        { duration: 100, easing: "ease-out", fill: "forwards" }
+    ).finished
+
+    flash.remove()
+}

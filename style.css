@@ -129,5 +129,5 @@ background: radial-gradient(hsl(154 5% 15%) 0%, hsl(154 50% 5%) 70%);
 }
 
 #content.reveal {
-    animation: reveal 3s steps(20) forwards;
+    animation: reveal 1s steps(20) forwards;
 }
